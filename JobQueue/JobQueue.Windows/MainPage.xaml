@@ -1,0 +1,51 @@
+﻿<Page
+    x:Class="JobQueue.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:JobQueue"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <DataTemplate x:Key="NoteTemplate">
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="9*"/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" MinWidth="100" Text="{Binding Content}" HorizontalAlignment="Stretch"/>
+                <Button Grid.Column="1" Background="#FF9E0D0D" Click="DeleteButton_Click">X</Button>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel Margin="20">
+
+            <Grid HorizontalAlignment="Stretch" Width="{Binding Parent.ActualWidth, Mode=OneWay, RelativeSource={RelativeSource Mode=Self}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="9*"/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="NewNoteTextBox" Grid.Column="0" PlaceholderText="new note" KeyUp="NewNoteTextBox_KeyUp"></TextBox>
+                <Button x:Name="AddButton" Grid.Column="1" Click="DeleteButton_Click">Add</Button>
+            </Grid>
+
+            <ItemsControl x:Name="NotesContainer" Margin="0,20,0,0" ItemTemplate="{StaticResource NoteTemplate}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel>
+                        </StackPanel>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <Grid>
+                    <TextBlock>Hello</TextBlock>
+                </Grid>
+                <Grid>
+                    <TextBlock>Hello</TextBlock>
+                </Grid>
+            </ItemsControl>
+        </StackPanel>
+    </Grid>
+</Page>
