@@ -62,9 +62,9 @@ namespace JobQueue
 
         #endregion "Properties"
 
-        private JobQueue.App app = (Application.Current as App);
+        static private JobQueue.App app = (Application.Current as App);
 
-        public NoteViewModel GetNote(int projectId)
+        static public NoteViewModel GetNote(int projectId)
         {
             var note = new NoteViewModel();
             using (var db = new SQLite.SQLiteConnection(app.DBPath))
@@ -77,7 +77,7 @@ namespace JobQueue
             return note;
         }
 
-        public string SaveNote(NoteViewModel note)
+        static public void SaveNote(NoteViewModel note)
         {
             string result = string.Empty;
             using (var db = new SQLite.SQLiteConnection(app.DBPath))
@@ -107,10 +107,10 @@ namespace JobQueue
                     result = "This project was not saved.";
                 }
             }
-            return result;
+            //return result;
         }
 
-        public string DeleteNote(int noteId)
+        static public void DeleteNote(int noteId)
         {
             string result = string.Empty;
             using (var db = new SQLite.SQLiteConnection(app.DBPath))
@@ -127,10 +127,15 @@ namespace JobQueue
                     result = "This project was not removed";
                 }
             }
-            return result;
+            //return result;
         }
 
-        public int GetNewNoteId()
+        static public void DeleteNote(NoteViewModel vm)
+        {
+            DeleteNote(vm.Id);
+        }
+
+        static public int GetNewNoteId()
         {
             int projectId = 0;
             using (var db = new SQLite.SQLiteConnection(app.DBPath))

@@ -10,8 +10,8 @@ namespace JobQueue
 {
     public class NotesViewModel : ViewModelBase
     {
-        private ObservableCollection<NoteViewModel> notes;
-        public ObservableCollection<NoteViewModel> Notes
+        private ReactiveUI.ReactiveList<NoteViewModel> notes;
+        public ReactiveUI.ReactiveList<NoteViewModel> Notes
         {
             get
             {
@@ -27,9 +27,19 @@ namespace JobQueue
 
         private JobQueue.App app = (Application.Current as App);
 
-        public ObservableCollection<NoteViewModel> GetNotes()
+
+        public NotesViewModel()
         {
-            notes = new ObservableCollection<NoteViewModel>();
+            notes = getNotes();
+
+            Notes.ItemsAdded.Subscribe(NoteViewModel.SaveNote);
+            Notes.ItemsRemoved.Subscribe(NoteViewModel.DeleteNote);
+        }
+
+
+        private ReactiveUI.ReactiveList<NoteViewModel> getNotes()
+        {
+            notes = new ReactiveUI.ReactiveList<NoteViewModel>();
             using (var db = new SQLite.SQLiteConnection(app.DBPath))
             {
                 var query = db.Table<Note>();
