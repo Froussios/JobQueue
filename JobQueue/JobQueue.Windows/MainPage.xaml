@@ -9,13 +9,13 @@
 
     <Page.Resources>
         <DataTemplate x:Key="NoteTemplate">
-            <Grid HorizontalAlignment="Stretch">
+            <Grid Name="TemplateTop" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="9*"/>
                     <ColumnDefinition Width="70"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" MinWidth="100" Text="{Binding Content}" HorizontalAlignment="Stretch"/>
-                <Button Grid.Column="1" Background="#FF9E0D0D" Click="DeleteButton_Click">X</Button>
+                <TextBox Name="Content" Grid.Column="0" MinWidth="100" Text="{Binding Content}" HorizontalAlignment="Stretch"/>
+                <Button Name="DeleteButton"  Grid.Column="1" Background="#FF9E0D0D" Click="DeleteButton_Click">X</Button>
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -28,8 +28,8 @@
                     <ColumnDefinition Width="9*"/>
                     <ColumnDefinition Width="70"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="NewNoteTextBox" Grid.Column="0" PlaceholderText="new note" KeyUp="NewNoteTextBox_KeyUp"></TextBox>
-                <Button x:Name="AddButton" Grid.Column="1" Click="DeleteButton_Click">Add</Button>
+                <TextBox x:Name="NewNoteTextBox" Grid.Column="0" PlaceholderText="new note"></TextBox>
+                <Button x:Name="AddButton" Grid.Column="1">Add</Button>
             </Grid>
 
             <ItemsControl x:Name="NotesContainer" Margin="0,20,0,0" ItemTemplate="{StaticResource NoteTemplate}">
