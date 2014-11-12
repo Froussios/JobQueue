@@ -38,6 +38,8 @@ namespace JobQueue
         Subject<VirtualKey> keyUpStream = new Subject<VirtualKey>();
         Subject<VirtualKey> keyDownStream = new Subject<VirtualKey>();
 
+        Subject<VirtualKey> newNote_KeyUpStream = new Subject<VirtualKey>();
+
         Subject<NoteViewModel> gotFocusStream = new Subject<NoteViewModel>();
         Subject<NoteViewModel> lostFocusStream = new Subject<NoteViewModel>();
 
@@ -74,9 +76,11 @@ namespace JobQueue
             //
 
             deleteStream.Subscribe(x => notes.Remove(x));
-            editStream.Subscribe(x => x.SaveNote());
+            editStream.Subscribe(x => x.SaveNote()); // TODO debounce
             
-            addNoteStream.Select(x => NewNoteTextBox.Text)
+            addNoteStream.Select(x => true)
+                         .Merge(newNote_KeyUpStream.Where(x => x == VirtualKey.Enter).Select(x => true))
+                         .Select(x => NewNoteTextBox.Text)
                          .Subscribe(x =>
                          {
                              NoteViewModel note = new NoteViewModel() { Content = x };
@@ -84,7 +88,8 @@ namespace JobQueue
                              System.Diagnostics.Debug.WriteLine("Added new note");
                          });
 
-
+            newNote_KeyUpStream.Where(x => x == VirtualKey.Escape)
+                               .Subscribe(x => NewNoteTextBox.Text = "");
 
             
         }
@@ -126,6 +131,11 @@ namespace JobQueue
         private void Content_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             keyDownStream.OnNext(e.Key);
+        }
+
+        private void KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            newNote_KeyUpStream.OnNext(e.Key);
         }
 
 
