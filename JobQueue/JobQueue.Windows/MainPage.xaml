@@ -15,7 +15,7 @@
         			<ColumnDefinition Width="9*"/>
         			<ColumnDefinition Width="70"/>
         		</Grid.ColumnDefinitions>
-        		<TextBox x:Name="Content"  Grid.Column="0" Grid.ColumnSpan="2" MinWidth="100" Text="{Binding Content, Mode=TwoWay}" HorizontalAlignment="Stretch" TextChanged="Content_TextChanged" LostFocus="Content_LostFocus" KeyUp="Content_KeyUp"/>
+        		<TextBox x:Name="Content"  Grid.Column="0" Grid.ColumnSpan="2" MinWidth="100" Text="{Binding Content, Mode=TwoWay}" HorizontalAlignment="Stretch" TextChanged="Content_TextChanged" LostFocus="Content_LostFocus" KeyUp="Content_KeyUp" GotFocus="Content_GotFocus" KeyDown="Content_KeyDown"/>
         		<Button HorizontalAlignment="Stretch" x:Name="DeleteButton" Grid.Column="1" Background="#FF9E0D0D" Click="DeleteButton_Click" Content="X"/>
         	</Grid>
         </DataTemplate>

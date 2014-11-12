@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ReactiveUI;
+using Windows.System;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -29,11 +30,18 @@ namespace JobQueue
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        ReactiveList<NoteViewModel> notes;
+
         Subject<NoteViewModel> deleteStream = new Subject<NoteViewModel>();
         Subject<NoteViewModel> editStream = new Subject<NoteViewModel>();
-        IObservable<EventPattern<RoutedEventArgs>> addNoteStream = null;
 
-        ReactiveList<NoteViewModel> notes;
+        Subject<VirtualKey> keyUpStream = new Subject<VirtualKey>();
+        Subject<VirtualKey> keyDownStream = new Subject<VirtualKey>();
+
+        Subject<NoteViewModel> gotFocusStream = new Subject<NoteViewModel>();
+        Subject<NoteViewModel> lostFocusStream = new Subject<NoteViewModel>();
+
+        IObservable<EventPattern<RoutedEventArgs>> addNoteStream = null;
 
 
         public MainPage()
@@ -100,12 +108,24 @@ namespace JobQueue
 
         private void Content_LostFocus(object sender, RoutedEventArgs e)
         {
+            NoteViewModel note = getDataContext<NoteViewModel>(sender as DependencyObject);
+            lostFocusStream.OnNext(note);
+        }
 
+        private void Content_GotFocus(object sender, RoutedEventArgs e)
+        {
+            NoteViewModel note = getDataContext<NoteViewModel>(sender as DependencyObject);
+            gotFocusStream.OnNext(note);
+        }
+
+        private void Content_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            keyDownStream.OnNext(e.Key);
         }
 
         private void Content_KeyUp(object sender, KeyRoutedEventArgs e)
         {
-
+            keyDownStream.OnNext(e.Key);
         }
 
 
@@ -170,8 +190,6 @@ namespace JobQueue
             return default(T);
         }
 
-        
-
-        
+               
     }
 }
