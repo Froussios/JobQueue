@@ -86,6 +86,7 @@ namespace JobQueue
                              NoteViewModel note = new NoteViewModel() { Content = x };
                              notesvm.Notes.Add(note);
                              System.Diagnostics.Debug.WriteLine("Added new note");
+                             NewNoteTextBox.Text = ""
                          });
 
             newNote_KeyUpStream.Where(x => x == VirtualKey.Escape)
