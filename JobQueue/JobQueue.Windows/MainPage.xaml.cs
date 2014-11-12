@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Windows.Input;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Input;
@@ -28,7 +29,11 @@ namespace JobQueue
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        Subject<NoteViewModel> deleteStream = new Subject<NoteViewModel>();
+
         ReactiveList<NoteViewModel> notes;
+
+
         public MainPage()
         {
             System.Diagnostics.Debug.WriteLine("App started");
@@ -40,47 +45,32 @@ namespace JobQueue
 
             NotesContainer.ItemsSource = notes;
 
-            IObservable<EventPattern<RoutedEventArgs>> addNoteEvs = Observable.FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
+            IObservable<EventPattern<RoutedEventArgs>> addNoteStream = Observable.FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
                 new Action<RoutedEventHandler>(ev => AddButton.Click += ev),
                 new Action<RoutedEventHandler>(ev => AddButton.Click -= ev)
             );
 
+            deleteStream.Subscribe(x => notes.Remove(x));
             
-
-            //IObservable<EventPattern<RoutedEventArgs>> deteleNoteEvs = Observable.FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
-            //    new Action<RoutedEventHandler>(ev => AddButton.Click += ev),
-            //    new Action<RoutedEventHandler>(ev => AddButton.Click -= ev)
-            //);
-
-            
-            
-
-            
-            
-
-            addNoteEvs.Select(x => NewNoteTextBox.Text)
-                       .Subscribe(x =>
-                       {
-                           NoteViewModel note = new NoteViewModel() { Content = x };
-                           notesvm.Notes.Add(note);
-                           System.Diagnostics.Debug.WriteLine("Added new note");
-                       });
+            addNoteStream.Select(x => NewNoteTextBox.Text)
+                            .Subscribe(x =>
+                            {
+                                NoteViewModel note = new NoteViewModel() { Content = x };
+                                notesvm.Notes.Add(note);
+                                System.Diagnostics.Debug.WriteLine("Added new note");
+                            });
 
             
         }
 
 
 
-
-
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Delete clicked");
-
             FrameworkElement templateTop = getParent(sender as DependencyObject, "ParentTop");
             NoteViewModel note = getDataContext<NoteViewModel>(sender as DependencyObject);
 
-            System.Diagnostics.Debug.WriteLine(note.Content);
+            deleteStream.OnNext(note);
         }
 
 
@@ -104,34 +94,12 @@ namespace JobQueue
         }
 
 
-        private DependencyObject FindChildControl<T>(DependencyObject control, string ctrlName)
-        {
-            int childNumber = VisualTreeHelper.GetChildrenCount(control);
-            for (int i = 0; i < childNumber; i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(control, i);
-                FrameworkElement fe = child as FrameworkElement;
-                // Not a framework element or is null
-                if (fe == null) return null;
-
-                if (child is T && fe.Name == ctrlName)
-                {
-                    // Found the control so return
-                    return child;
-                }
-                else
-                {
-                    // Not found it - search children
-                    DependencyObject nextLevel = FindChildControl<T>(child, ctrlName);
-                    if (nextLevel != null)
-                        return nextLevel;
-                }
-            }
-            return null;
-        }
-
-
-
+        /// <summary>
+        /// Get the first parent with the given name
+        /// </summary>
+        /// <param name="ob">The element to start the search from</param>
+        /// <param name="parentName">The target parent name</param>
+        /// <returns>The parent element</returns>
         private FrameworkElement getParent(DependencyObject ob, String parentName)
         {
             DependencyObject parent = ob;
@@ -144,6 +112,13 @@ namespace JobQueue
             return null;
         }
 
+
+        /// <summary>
+        /// Finds the first parent with a DataContext value of type T
+        /// </summary>
+        /// <typeparam name="T">The type of the data context</typeparam>
+        /// <param name="ob">The object to start the search from</param>
+        /// <returns>The DataContext value found, or null</returns>
         private T getDataContext<T>(DependencyObject ob)
         {
             DependencyObject scan = ob;
