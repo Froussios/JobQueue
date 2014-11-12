@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 
@@ -79,6 +80,7 @@ namespace JobQueue
 
         static public void SaveNote(NoteViewModel note)
         {
+            Debug.WriteLine("Saving " + note.Id);
             string result = string.Empty;
             using (var db = new SQLite.SQLiteConnection(app.DBPath))
             {
@@ -90,24 +92,25 @@ namespace JobQueue
 
                     if (existingNote != null)
                     {
+                        Debug.WriteLine("Updating " + existingNote.Id);
                         existingNote.Content = note.Content;
                         int success = db.Update(existingNote);
                     }
                     else
                     {
-                        int success = db.Insert(new Note()
-                        {
-                            Content = note.Content,
-                        });
+                        Debug.WriteLine("Inserting...");
+                        Note feed = new Note() { Content = note.Content };
+                        int success = db.Insert(feed);
+                        note.Id = feed.Id;
                     }
                     result = "Success";
                 }
                 catch (Exception ex)
                 {
-                    result = "This project was not saved.";
+                    result = "This note was not saved.";
                 }
             }
-            //return result;
+            Debug.WriteLine(result);
         }
 
         public void SaveNote()
@@ -120,6 +123,7 @@ namespace JobQueue
             string result = string.Empty;
             using (var db = new SQLite.SQLiteConnection(app.DBPath))
             {
+                Debug.WriteLine("Deleting " + noteId);
                 var existingNote = (db.Table<Note>().Where(
                     c => c.Id == noteId)).Single();
 
@@ -132,32 +136,12 @@ namespace JobQueue
                     result = "This project was not removed";
                 }
             }
-            //return result;
+            Debug.WriteLine(result);
         }
 
         static public void DeleteNote(NoteViewModel vm)
         {
             DeleteNote(vm.Id);
-        }
-
-        static public int GetNewNoteId()
-        {
-            int projectId = 0;
-            using (var db = new SQLite.SQLiteConnection(app.DBPath))
-            {
-                var projects = db.Table<Note>();
-                if (projects.Count() > 0)
-                {
-                    projectId = (from c in db.Table<Note>()
-                                 select c.Id).Max();
-                    projectId += 1;
-                }
-                else
-                {
-                    projectId = 1;
-                }
-            }
-            return projectId;
         }
 
     }
