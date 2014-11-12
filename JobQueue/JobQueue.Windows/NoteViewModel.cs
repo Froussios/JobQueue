@@ -110,6 +110,11 @@ namespace JobQueue
             //return result;
         }
 
+        public void SaveNote()
+        {
+            SaveNote(this);
+        }
+
         static public void DeleteNote(int noteId)
         {
             string result = string.Empty;

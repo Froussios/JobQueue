@@ -30,35 +30,53 @@ namespace JobQueue
     public sealed partial class MainPage : Page
     {
         Subject<NoteViewModel> deleteStream = new Subject<NoteViewModel>();
+        Subject<NoteViewModel> editStream = new Subject<NoteViewModel>();
+        IObservable<EventPattern<RoutedEventArgs>> addNoteStream = null;
 
         ReactiveList<NoteViewModel> notes;
 
 
         public MainPage()
         {
-            System.Diagnostics.Debug.WriteLine("App started");
-
             this.InitializeComponent();
+            
+
+            //
+            // Initialise model
+            //
 
             NotesViewModel notesvm = new NotesViewModel();
             notes = notesvm.Notes;
 
             NotesContainer.ItemsSource = notes;
 
+
+            //
+            // Create streams
+            //
+
             IObservable<EventPattern<RoutedEventArgs>> addNoteStream = Observable.FromEventPattern<RoutedEventHandler, RoutedEventArgs>(
                 new Action<RoutedEventHandler>(ev => AddButton.Click += ev),
                 new Action<RoutedEventHandler>(ev => AddButton.Click -= ev)
             );
 
+
+            //
+            // Behaviour
+            //
+
             deleteStream.Subscribe(x => notes.Remove(x));
+            editStream.Subscribe(x => x.SaveNote());
             
             addNoteStream.Select(x => NewNoteTextBox.Text)
-                            .Subscribe(x =>
-                            {
-                                NoteViewModel note = new NoteViewModel() { Content = x };
-                                notesvm.Notes.Add(note);
-                                System.Diagnostics.Debug.WriteLine("Added new note");
-                            });
+                         .Subscribe(x =>
+                         {
+                             NoteViewModel note = new NoteViewModel() { Content = x };
+                             notesvm.Notes.Add(note);
+                             System.Diagnostics.Debug.WriteLine("Added new note");
+                         });
+
+
 
             
         }
@@ -67,10 +85,27 @@ namespace JobQueue
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            FrameworkElement templateTop = getParent(sender as DependencyObject, "ParentTop");
             NoteViewModel note = getDataContext<NoteViewModel>(sender as DependencyObject);
-
             deleteStream.OnNext(note);
+        }
+
+
+        private void Content_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            NoteViewModel note = getDataContext<NoteViewModel>(sender as DependencyObject);
+            note.Content = (sender as TextBox).Text; //Two-way binding does this after firing this event
+            editStream.OnNext(note);
+        }
+
+
+        private void Content_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Content_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+
         }
 
 
@@ -134,5 +169,9 @@ namespace JobQueue
             }
             return default(T);
         }
+
+        
+
+        
     }
 }
