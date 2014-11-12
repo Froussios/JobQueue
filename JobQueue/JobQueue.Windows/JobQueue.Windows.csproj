@@ -136,6 +136,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\icon.scale-100.png" />
+    <Content Include="Assets\icon.scale-140.png" />
+    <Content Include="Assets\icon.scale-180.png" />
+    <Content Include="Assets\icon.scale-80.png" />
     <Content Include="Assets\Logo.scale-100.png" />
     <Content Include="Assets\SmallLogo.scale-100.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />

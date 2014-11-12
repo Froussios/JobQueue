@@ -1,38 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-
-  <Identity Name="80cd15b2-b05c-42da-a0fd-2b51a2633cde"
-            Publisher="CN=Chris"
-            Version="1.0.0.0" />
-
+  <Identity Name="80cd15b2-b05c-42da-a0fd-2b51a2633cde" Publisher="CN=Chris" Version="1.0.0.0" />
   <Properties>
     <DisplayName>JobQueue.Windows</DisplayName>
     <PublisherDisplayName>Chris</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
-
   <Prerequisites>
     <OSMinVersion>6.3.0</OSMinVersion>
     <OSMaxVersionTested>6.3.0</OSMaxVersionTested>
   </Prerequisites>
-
   <Resources>
-    <Resource Language="x-generate"/>
+    <Resource Language="x-generate" />
   </Resources>
-
   <Applications>
-    <Application Id="App"
-        Executable="$targetnametoken$.exe"
-        EntryPoint="JobQueue.Windows.App">
-        <m2:VisualElements
-            DisplayName="JobQueue.Windows"
-            Square150x150Logo="Assets\Logo.png"
-            Square30x30Logo="Assets\SmallLogo.png"
-            Description="JobQueue.Windows"
-            ForegroundText="light"
-            BackgroundColor="#464646">
-            <m2:SplashScreen Image="Assets\SplashScreen.png" />
-        </m2:VisualElements>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="JobQueue.Windows.App">
+      <m2:VisualElements DisplayName="JobQueue" Square150x150Logo="Assets\icon.png" Square30x30Logo="Assets\SmallLogo.png" Description="JobQueue.Windows" ForegroundText="light" BackgroundColor="#FF8C00" ToastCapable="false">
+        <m2:DefaultTile ShortName="JobQueue" DefaultSize="square150x150Logo">
+          <m2:ShowNameOnTiles>
+            <m2:ShowOn Tile="square150x150Logo" />
+          </m2:ShowNameOnTiles>
+        </m2:DefaultTile>
+        <m2:SplashScreen Image="Assets\SplashScreen.png" />
+      </m2:VisualElements>
     </Application>
   </Applications>
   <Capabilities>
