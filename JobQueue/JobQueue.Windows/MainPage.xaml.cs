@@ -77,6 +77,7 @@ namespace JobQueue
 
             deleteStream.Subscribe(x => notes.Remove(x));
             editStream  .Throttle(new TimeSpan(1000*1000*10))
+                        .Distinct()
                         .Subscribe(x => x.SaveNote()); // TODO debounce
             
             addNoteStream.Select(x => true)
