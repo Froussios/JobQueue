@@ -76,7 +76,8 @@ namespace JobQueue
             //
 
             deleteStream.Subscribe(x => notes.Remove(x));
-            editStream.Subscribe(x => x.SaveNote()); // TODO debounce
+            editStream  .Throttle(new TimeSpan(1000*1000*10))
+                        .Subscribe(x => x.SaveNote()); // TODO debounce
             
             addNoteStream.Select(x => true)
                          .Merge(newNote_KeyUpStream.Where(x => x == VirtualKey.Enter).Select(x => true))
