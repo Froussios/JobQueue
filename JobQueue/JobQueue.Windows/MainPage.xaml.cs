@@ -79,7 +79,7 @@ namespace JobQueue
             editStream  .GroupBy(x => x.Id)
                         .Subscribe(group => 
                                    group.Throttle(new TimeSpan(1000*1000*10))
-                                        .Distinct(x => x.Content)
+                                        .DistinctUntilChanged(x => x.Content)
                                         .Subscribe(x => x.SaveNote())
                         );
             
