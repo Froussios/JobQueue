@@ -17,9 +17,6 @@
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="JobQueue.Windows.App">
       <m2:VisualElements DisplayName="JobQueue" Square150x150Logo="Assets\icon.png" Square30x30Logo="Assets\SmallLogo.png" Description="JobQueue.Windows" ForegroundText="light" BackgroundColor="#FF8C00" ToastCapable="false">
         <m2:DefaultTile ShortName="JobQueue" DefaultSize="square150x150Logo">
-          <m2:ShowNameOnTiles>
-            <m2:ShowOn Tile="square150x150Logo" />
-          </m2:ShowNameOnTiles>
         </m2:DefaultTile>
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
       </m2:VisualElements>
